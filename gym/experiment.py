@@ -59,10 +59,10 @@ def experiment(
     elif env_name == 'kitchen':
         import mj_envs
         from mjrl.utils.gym_env import GymEnv
-        env = GymEnv('kitchen_knob1_on-v3')
+        env = GymEnv('kitchen-v3')
         max_ep_len = 50
-        env_targets = [-40, -20]
-        scale = 10.
+        env_targets = [0]
+        scale = 1.
     else:
         raise NotImplementedError
 
@@ -285,6 +285,9 @@ def experiment(
         outputs = trainer.train_iteration(num_steps=variant['num_steps_per_iter'], iter_num=iter+1, print_logs=True)
         if log_to_wandb:
             wandb.log(outputs)
+    
+    if save_model:
+        model.save(model, 'model.pt')
 
 
 if __name__ == '__main__':
@@ -309,6 +312,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_steps_per_iter', type=int, default=10000)
     parser.add_argument('--device', type=str, default='cpu')
     parser.add_argument('--log_to_wandb', '-w', type=bool, default=False)
+    parser.add_argument('--save_model', type=bool, default=True)
     
     args = parser.parse_args()
 
