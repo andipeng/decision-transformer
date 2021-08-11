@@ -286,8 +286,7 @@ def experiment(
         if log_to_wandb:
             wandb.log(outputs)
     
-    if save_model:
-        model.save(model, 'model.pt')
+    model.save(model, 'model.pkl')
 
 
 if __name__ == '__main__':
