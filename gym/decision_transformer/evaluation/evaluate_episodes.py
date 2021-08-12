@@ -116,13 +116,14 @@ def evaluate_episode_rtg(
         action = action.detach().cpu().numpy()
 
         state, reward, done, _ = env.step(action)
+        #env.render()
 
         cur_state = torch.from_numpy(state).to(device=device).reshape(1, state_dim)
         states = torch.cat([states, cur_state], dim=0)
         rewards[-1] = reward
 
         if mode != 'delayed':
-            pred_return = target_return[0,-1] - (reward/scale)
+            pred_return = target_return[0,-1]# - (reward/scale)
         else:
             pred_return = target_return[0,-1]
         target_return = torch.cat(

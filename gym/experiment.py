@@ -286,7 +286,7 @@ def experiment(
         if log_to_wandb:
             wandb.log(outputs)
     
-    model.save(model, 'model.pkl')
+    torch.save(model, 'model.pkl')
 
 
 if __name__ == '__main__':
