@@ -60,7 +60,7 @@ def experiment(
         import mj_envs
         from mjrl.utils.gym_env import GymEnv
         env = GymEnv('kitchen-v3')
-        max_ep_len = 50
+        max_ep_len = 100
         env_targets = [0]
         scale = 1.
     else:
@@ -286,7 +286,8 @@ def experiment(
         if log_to_wandb:
             wandb.log(outputs)
     
-    torch.save(model, 'model.pkl')
+    model_save_path = f'models/model-{dataset}.pkl'
+    torch.save(model, model_save_path)
 
 
 if __name__ == '__main__':
