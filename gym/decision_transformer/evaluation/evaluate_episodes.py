@@ -184,7 +184,7 @@ def sample_paths(
     model.to(device=device)
 
     state_mean = torch.from_numpy(state_mean).to(device=device)
-    state_std = torch.from_numpy(state_std).to(device=device)
+    state_std = torch.from_numpy(state_std).to(device=device) + 1e-6
 
     paths = []
     for ep in range(num_traj):
@@ -218,6 +218,7 @@ def sample_paths(
 
         episode_return, episode_length = 0, 0
         for t in range(max_ep_len):
+            print(t)
             env_info_base = env.get_env_infos()
 
             # add padding

@@ -14,14 +14,12 @@ from decision_transformer.models.mlp_bc import MLPBCModel
 from decision_transformer.training.act_trainer import ActTrainer
 from decision_transformer.training.seq_trainer import SequenceTrainer
 
-
 def discount_cumsum(x, gamma):
     discount_cumsum = np.zeros_like(x)
     discount_cumsum[-1] = x[-1]
     for t in reversed(range(x.shape[0]-1)):
         discount_cumsum[t] = x[t] + gamma * discount_cumsum[t+1]
     return discount_cumsum
-
 
 def experiment(
         exp_prefix,
@@ -60,11 +58,15 @@ def experiment(
         import mj_envs
         from mjrl.utils.gym_env import GymEnv
         env = GymEnv('kitchen-v3')
-        max_ep_len = 100
+        max_ep_len = 250
+        max_context_len = 500
         env_targets = [0]
         scale = 1.
     else:
         raise NotImplementedError
+
+    # make sure we're not evaluating on longer history than what we train on
+    assert max_context_len >= max_ep_len
 
     if model_type == 'bc':
         env_targets = env_targets[:1]  # since BC ignores target, no need for different evaluations
@@ -144,7 +146,7 @@ def experiment(
             #else:
             #    d.append(traj['dones'][si:si + max_len].reshape(1, -1))
             timesteps.append(np.arange(si, si + s[-1].shape[1]).reshape(1, -1))
-            timesteps[-1][timesteps[-1] >= max_ep_len] = max_ep_len-1  # padding cutoff
+            timesteps[-1][timesteps[-1] >= max_context_len] = max_context_len-1  # padding cutoff
             rtg.append(discount_cumsum(traj['rewards'][si:], gamma=1.)[:s[-1].shape[1] + 1].reshape(1, -1, 1))
             if rtg[-1].shape[1] <= s[-1].shape[1]:
                 rtg[-1] = np.concatenate([rtg[-1], np.zeros((1, 1, 1))], axis=1)
@@ -217,7 +219,7 @@ def experiment(
             state_dim=state_dim,
             act_dim=act_dim,
             max_length=K,
-            max_ep_len=max_ep_len,
+            max_ep_len=max_context_len,
             hidden_size=variant['embed_dim'],
             n_layer=variant['n_layer'],
             n_head=variant['n_head'],
@@ -286,9 +288,8 @@ def experiment(
         if log_to_wandb:
             wandb.log(outputs)
     
-    model_save_path = f'models/model-{dataset}.pkl'
+    model_save_path = f'models/model-{env_name}-{dataset}.pkl'
     torch.save(model, model_save_path)
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

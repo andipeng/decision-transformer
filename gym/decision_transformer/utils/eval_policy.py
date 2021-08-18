@@ -64,7 +64,7 @@ def main(env, policy, data, target_rew, scale, max_ep_len, num_episodes, mode, s
                 state_mean=state_mean,
                 state_std=state_std,
                 base_seed=seed,
-                #device='cpu',
+                device='cpu',
             )
 
     print(paths)
