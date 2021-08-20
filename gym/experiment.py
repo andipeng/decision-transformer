@@ -71,7 +71,10 @@ def experiment(
     act_dim = env.action_space.shape[0]
 
     # load dataset
-    dataset_path = f'data/{env_name}-{dataset}-v2.pkl'
+    if env_name == 'kitchen':
+        dataset_path = f'data/kitchen-nohindsight/{dataset}.pkl'
+    else:
+        dataset_path = f'data/{env_name}-{dataset}-v2.pkl'
     with open(dataset_path, 'rb') as f:
         trajectories = pickle.load(f)
 
@@ -284,7 +287,7 @@ def experiment(
         if log_to_wandb:
             wandb.log(outputs)
     
-    model_save_path = f'models/model-{env_name}-{dataset}.pkl'
+    model_save_path = f'models/nohindsight_human/dt-{dataset}.pt'
     torch.save(model, model_save_path)
 
 if __name__ == '__main__':
