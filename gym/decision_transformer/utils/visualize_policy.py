@@ -23,17 +23,17 @@ USAGE:\n
 @click.command(help=DESC)
 @click.option('--env', type=str, help='environment to load', default='kitchen-v3')
 @click.option('--policy', type=str, help='absolute path of the policy file', default=None)
-@click.option('--data', type=str, help='absolute path of the training data (for input normalization)', default='data/kitchen-nohindsight/subfolder.pkl')
+@click.option('--data', type=str, help='absolute path of the training data (for input normalization)', default='data/kitchen-nohindsight/friday_microwave_bottomknob_hinge_slide.pkl')
 @click.option('--target_rew', type=int, help='target reward to condition on', default=0)
 @click.option('--scale', type=float, help='scaling of reward', default=1.)
 @click.option('--num_episodes', type=int, help='number of episodes to eval on', default=1)
-@click.option('--max_ep_len', type=int, help='max episode length', default=300)
+@click.option('--max_ep_len', type=int, help='max episode length', default=280)
 @click.option('--render', type=bool, help='render policy', default=True)
-@click.option('--mode', type=str, help='normal or delayed for sparse reward settings', default='normal')
+@click.option('--mode', type=str, help='normal or delayed for sparse reward settings', default='noise')
 
 def main(env, policy, data, target_rew, scale, max_ep_len, num_episodes, render, mode):
     e = GymEnv(env)
-    model = torch.load(policy)
+    model = torch.load(policy, map_location=torch.device('cpu'))
     trajectories = pickle.load(open(data, 'rb'))
 
     # save all path information into separate lists
