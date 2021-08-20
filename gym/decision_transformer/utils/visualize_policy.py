@@ -23,7 +23,7 @@ USAGE:\n
 @click.command(help=DESC)
 @click.option('--env', type=str, help='environment to load', default='kitchen-v3')
 @click.option('--policy', type=str, help='absolute path of the policy file', default=None)
-@click.option('--data', type=str, help='absolute path of the training data (for input normalization)', default='data/kitchen-expert-v2.pkl')
+@click.option('--data', type=str, help='absolute path of the training data (for input normalization)', default='data/kitchen-nohindsight/subfolder.pkl')
 @click.option('--target_rew', type=int, help='target reward to condition on', default=0)
 @click.option('--scale', type=float, help='scaling of reward', default=1.)
 @click.option('--num_episodes', type=int, help='number of episodes to eval on', default=1)
@@ -62,7 +62,7 @@ def main(env, policy, data, target_rew, scale, max_ep_len, num_episodes, render,
                 max_ep_len=max_ep_len,
                 scale=scale,
                 target_return=target_rew/scale,
-                mode='normal',
+                mode='noise',
                 state_mean=state_mean,
                 state_std=state_std,
                 device='cpu',
