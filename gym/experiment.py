@@ -287,7 +287,7 @@ def experiment(
         if log_to_wandb:
             wandb.log(outputs)
     
-    model_save_path = f'models/nohindsight_human/dt-{dataset}.pt'
+    model_save_path = f'models/nohindsight_human/dt-{K}-{dataset}.pt'
     torch.save(model, model_save_path)
 
 if __name__ == '__main__':
